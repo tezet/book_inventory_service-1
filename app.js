@@ -45,6 +45,19 @@ app.get('/stock', function (req, res, next) {
         catch(next);
 });
 
+app.get('/stock/:isbn', function (req, res, next) {
+    stockRepository.
+        getCount(req.params.isbn).
+        then(function (result) {
+            if(result) {
+                res.json({count: result});
+            } else {
+                next();
+            }
+        }).
+        catch(next);
+});
+
 app.use(clientError);
 app.use(serverError);
 
