@@ -29,8 +29,13 @@ app.get('/', function (req, res) {
 });
 
 var collection;
-var p = MongoClient.connect(url).then(function(db) {
+var p = MongoClient.connect(url, {
+    db: { bufferMaxEntries: 0 }
+}).then(function(db) {
     return db.collection('books');
+}).catch(function(err) {
+    console.error(err);
+    process.exit(1);
 });
 
 
@@ -47,7 +52,6 @@ app.post('/stock', function (req, res, next) {
 
 app.get('/stock', function (req, res, next) {
     p.then(function(collection) {
-        throw new Error("ASDfdasf");
         return collection.find({}).toArray();
     }).then(function(results) {
         res.json(results);
