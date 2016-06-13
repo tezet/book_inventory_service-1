@@ -1,8 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var MongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/bookinventory';
+var stockRepository = require('./stockRepository');
 
 function logRequest(req, res, next) {
     console.log('incoming request logged at ', new Date());
@@ -28,34 +27,22 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
-var collection;
-var p = MongoClient.connect(url, {
-    db: { bufferMaxEntries: 0 }
-}).then(function(db) {
-    return db.collection('books');
-}).catch(function(err) {
-    console.error(err);
-    process.exit(1);
-});
-
-
 app.post('/stock', function (req, res, next) {
-    p.then(function(collection) {
-        return collection.updateOne({isbn: req.body.isbn}, {
-            isbn: req.body.isbn,
-            count: req.body.count
-        }, {upsert: true});
-    }).then(function() {
-        res.json({isbn: req.body.isbn, count: req.body.count});
-    }).catch(next);
+    stockRepository.
+        stockUp(req.body.isbn, req.body.count).
+        then(function () {
+            res.json({isbn: req.body.isbn, count: req.body.count});
+        }).
+        catch(next);
 });
 
 app.get('/stock', function (req, res, next) {
-    p.then(function(collection) {
-        return collection.find({}).toArray();
-    }).then(function(results) {
-        res.json(results);
-    }).catch(next);
+    stockRepository.
+        findAll().
+        then(function (results) {
+            res.json(results);
+        }).
+        catch(next);
 });
 
 app.use(clientError);
