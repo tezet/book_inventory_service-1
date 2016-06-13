@@ -45,8 +45,9 @@ app.post('/stock', function (req, res, next) {
     }).catch(next);
 });
 
-app.get('/stock', function (req, res) {
+app.get('/stock', function (req, res, next) {
     p.then(function(collection) {
+        throw new Error("ASDfdasf");
         return collection.find({}).toArray();
     }).then(function(results) {
         res.json(results);
