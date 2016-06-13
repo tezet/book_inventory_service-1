@@ -50,7 +50,7 @@ app.get('/stock', function (req, res) {
         return collection.find({}).toArray();
     }).then(function(results) {
         res.json(results);
-    });
+    }).catch(next);
 });
 
 app.use(clientError);
