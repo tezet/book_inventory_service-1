@@ -25,25 +25,34 @@ app.use(bodyParser.json());
 app.use(logRequest);
 
 app.get('/', function (req, res) {
-    MongoClient.connect(url, function (err, db) {
-        db.collection('books').updateOne({isbn: req.body.isbn}, {
-            isbn: req.body.isbn,
-            count: req.body.count
-        }, {upsert: true});
-    });
     res.send('Hello World!');
 });
 
-app.get('/stock', function (req, res) {
-    MongoClient.connect(url, function (err, db) {
-        db.collection('books').find({}).toArray(function (err, results) {
-            res.json(results);
-        });
-    });
+var collection;
+MongoClient.connect(url, function (err, db) {
+    if(err) {
+        console.error(err);
+        process.exit(1);
+    }
+    else {
+        console.log("Connected succesfully to server");
+        collection = db.collection('books');
+    }
 });
 
+
 app.post('/stock', function (req, res) {
-    res.json({isbn: req.body.isbn, count: req.body.count})
+    collection.updateOne({isbn: req.body.isbn}, {
+        isbn: req.body.isbn,
+        count: req.body.count
+    }, {upsert: true});
+    res.json({isbn: req.body.isbn, count: req.body.count});
+});
+
+app.get('/stock', function (req, res) {
+    collection.find({}).toArray(function (err, results) {
+        res.json(results);
+    });
 });
 
 app.use(clientError);
