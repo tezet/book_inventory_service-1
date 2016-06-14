@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "mocha",
-    "lint": "jshint --exclude=node_modules/** ."
+    "lint": "jshint --exclude=node_modules/** .",
+    "test:xunit": "npm run test -- --reporter xunit"
   },
   "author": "",
   "license": "ISC",
