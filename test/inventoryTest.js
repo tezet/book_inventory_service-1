@@ -9,5 +9,5 @@ describe('Book inventory', function () {
             send({isbn: '1234', count: 10}).
             expect('Content-Type', /json/).
             expect(200, {isbn: '1234', count: 10}, done);
-    })
+    });
 });
