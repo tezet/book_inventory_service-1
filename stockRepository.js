@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 
-var url = 'mongodb://localhost:27017/bookinventory';
+var url = process.env.MONGODB_URI || 'mongodb://localhost:27017/bookinventory';
 
 var collection = MongoClient.connect(url, {db: {bufferMaxEntries: 0}}).then(function (db) {
     return db.collection('books');
