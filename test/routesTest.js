@@ -30,6 +30,25 @@ describe('Route', function () {
         routes.stockUp(req, res);
     });
 
- 
+    it('stock up should pass error to the next middleware on repository failure', function (done) {
+        var stockRepository = {
+            stockUp: function () {
+                return Promise.reject('DB error');
+            }
+        };
+        var routes = routesFactory(stockRepository);
+        var req = {
+            body: {
+                isbn: '1234567890',
+                count: 10
+            }
+        };
+        var next = function (error) {
+            assert.equal(error, 'DB error');
+            done();
+        };
+
+        routes.stockUp(req, null, next);
+    });
 
 });
