@@ -2,11 +2,12 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var middleware = require('./middleware');
 
-module.exports = function(stockRepository) {
+module.exports = function(stockRepository, auth) {
     var app = express();
     var routes = require('./routes')(stockRepository);
 
     app.use(bodyParser.json());
+    app.use(auth);
     app.use(middleware.logRequest);
 
     app.get('/', routes.hello);
